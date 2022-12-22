@@ -11,15 +11,43 @@
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 #ifndef SIG_PF
 #define SIG_PF void(*)(int)
 #endif
 
+
+long compartilhada = 0;//memoria compartilhada
+sem_t mutex; //declaração
+
+//Funcao que vai executar a soma de maneira paralelizada
+void *sumThread(void *arg) {
+    sem_wait(&mutex); //entra na sessão crítica
+
+	sem_post(&mutex); //sai da sessão crítica
+}
+
+//Funcao que vai executar a subtracao de maneira paralelizada
+void *subThread(void *arg) {}
+
+//Funcao que vai executar a multiplicacao de maneira paralelizada
+void *multThread(void *arg) {}
+
+//Funcao que vai executar a divisao de maneira paralelizada
+void *divThread(void *arg) {}
+
 static void
 somasub_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
-	
+	pthread_t tid;
+    int ret;
+
+	sem_init(&mutex, 0, 1); 
+	//segundo arg: 0 - semaforo compartilhado entre threads 
+	//terceiro arg: 1 - valor inicial do semaforo
+	ret = pthread_create(&tid, NULL, sumThread, NULL)
 	union {
 		operandos soma_1_arg;
 		operandos sub_1_arg;
