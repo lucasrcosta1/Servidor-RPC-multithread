@@ -20,3 +20,4 @@ program OPERATION_PROG {
         int MULT(operandos) = 4;
     } = 1; /*versao procedimento*/
 } = 0x20000001; /*versao programa*/
+
