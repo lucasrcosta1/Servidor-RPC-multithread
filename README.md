@@ -4,7 +4,7 @@ Tested in Ubuntu 16
 Steps to reproduce it:
 
 1) Clone the repository;
-2) Open the terminal in the project directory;
+2) Open a terminal window in the project directory;
 3) Run command 'make'
 4) Run './serverOP'
 5) Open another terminal window and run './clientOp <ip_addr>'
