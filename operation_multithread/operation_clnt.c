@@ -44,3 +44,4 @@ mult_1(operandos *argp, int *clnt_res, CLIENT *clnt)
 		(xdrproc_t) xdr_int, (caddr_t) clnt_res,
 		TIMEOUT));
 }
+

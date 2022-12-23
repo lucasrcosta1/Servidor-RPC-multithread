@@ -15,23 +15,19 @@ pthread_t p_thread;
 pthread_attr_t attr;
 
 void *
-serv_request(void *data)
-{
-	struct thr_data
-	{
+serv_request(void *data) {
+	struct thr_data {
 		struct svc_req *rqstp;
 		SVCXPRT *transp;
 	} *ptr_data;
 
-	union
-	{
+	union {
 		operandos soma_1_arg;
 		operandos sub_1_arg;
 		operandos divisao_1_arg;
 		operandos mult_1_arg;
 	} argument;
-	union
-	{
+	union {
 		int soma_1_res;
 		int sub_1_res;
 		int divisao_1_res;
@@ -41,9 +37,9 @@ serv_request(void *data)
 	xdrproc_t _xdr_argument, _xdr_result;
 	bool_t (*local)(char *, void *, struct svc_req *);
 
-	ptr_data = (struct thr_data *)data;
-	struct svc_req *rqstp = ptr_data->rqstp;
-	register SVCXPRT *transp = ptr_data->transp;
+	ptr_data = (struct thr_data  *)data;
+	struct svc_req *rqstp = ptr_data-> rqstp;
+	register SVCXPRT *transp = ptr_data-> transp;
 
 	switch (rqstp->rq_proc)
 	{
@@ -77,7 +73,6 @@ serv_request(void *data)
 	default:
 		svcerr_noproc(transp);
 	}
-
 	memset((char *)&argument, 0, sizeof(argument));
 	if (!svc_getargs(transp, (xdrproc_t)_xdr_argument, (caddr_t)&argument))
 	{
@@ -95,24 +90,23 @@ serv_request(void *data)
 	}
 	if (!operation_prog_1_freeresult(transp, _xdr_result, (caddr_t)&result))
 		fprintf(stderr, "%s", "unable to free results");
-
 }
 
 static void
-operation_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
-{
-	struct data_str
-	{
+operation_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
+	struct data_str {
 		struct svc_req *rqstp;
 		SVCXPRT *transp;
-	} *data_ptr = (struct data_str *)malloc(sizeof(struct data_str));
-	data_ptr->rqstp = rqstp;
-	data_ptr->transp = transp;
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&p_thread, &attr, serv_request, (void *)data_ptr);
+	} *data_ptr = (struct data_str*)malloc(sizeof(struct data_str));
+	data_ptr-> rqstp = rqstp;
+	data_ptr-> transp = transp;
+	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+	pthread_create(&p_thread,&attr,serv_request,(void *)data_ptr);
+	
 }
 
-int main(int argc, char **argv)
+int 
+main(int argc, char **argv)
 {
 	register SVCXPRT *transp;
 
@@ -147,3 +141,4 @@ int main(int argc, char **argv)
 	exit(1);
 	/* NOTREACHED */
 }
+
