@@ -1,4 +1,4 @@
-# Servidor-RPC Multithreaded
+# Multithreaded RPC Server
 Tested in Ubuntu 16
 
 Steps to reproduce it:
