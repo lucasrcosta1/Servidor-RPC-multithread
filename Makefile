@@ -3,26 +3,27 @@
 
 # Parameters
 
-CLIENT = calculadora_client
-SERVER = calculadora_server
+CLIENT = clientOp
+SERVER = serverOp
 
 SOURCES_CLNT.c = 
 SOURCES_CLNT.h = 
 SOURCES_SVC.c = 
 SOURCES_SVC.h = 
-SOURCES.x = calculadora.x
+SOURCES.x = operation.x
 
-TARGETS_SVC.c = calculadora_svc.c calculadora_server.c calculadora_xdr.c 
-TARGETS_CLNT.c = calculadora_clnt.c calculadora_client.c calculadora_xdr.c 
-TARGETS = calculadora.h calculadora_xdr.c calculadora_clnt.c calculadora_svc.c calculadora_client.c calculadora_server.c
+TARGETS_SVC.c = operation_svc.c operation_server.c operation_xdr.c 
+TARGETS_CLNT.c = operation_clnt.c operation_client.c operation_xdr.c 
+TARGETS = operation.h operation_xdr.c operation_clnt.c operation_svc.c operation_client.c operation_server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
 # Compiler flags 
 
+CPPFLAGS += -D_REENTRANT
 CFLAGS += -g 
-LDLIBS += -lnsl
-RPCGENFLAGS = 
+LDLIBS += -lnsl -lpthread 
+ RPCGENFLAGS = 
 
 # Targets 
 

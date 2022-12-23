@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "calculadora.h"
+#include "operation.h"
 
 bool_t
 xdr_operandos (XDR *xdrs, operandos *objp)
