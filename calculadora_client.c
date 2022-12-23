@@ -32,7 +32,6 @@ sub (CLIENT *clnt, int a, int b)
 	return (*resultado);
 }
 
-
 int
 mult (CLIENT *clnt, int a, int b) 
 {
@@ -45,7 +44,6 @@ mult (CLIENT *clnt, int a, int b)
 	resultado = mult_1(&ops, clnt);
 	return (*resultado);
 }
-
 
 int
 divisao (CLIENT *clnt, int a, int b) 
@@ -89,7 +87,6 @@ somasub_prog_1(char *host)
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
 } 
-
 
 int
 main (int argc, char *argv[])
