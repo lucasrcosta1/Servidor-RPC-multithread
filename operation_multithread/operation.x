@@ -1,9 +1,9 @@
 /* 
 Pro cenario da aplicacao final, operacoes aplicadas serao:
-    - fatorial de um numero (inteiro);
-    - busca de uma string em um arquivo;
-    - fibonacci;
-    - busca aplicada utilizando o algoritmo de busca quicksort.
+    - multiplicacao de matrizes (matriz grande);
+    - busca de uma string em um arquivo (arquivo grande);
+    - encontrar valor primo baseado em um numero grande;
+    - busca aplicada utilizando o algoritmo de ordenacao quicksort (grandes arquivos/atentar memoria).
 Portanto, a estrutura abaixo provavelmente nao servira o seu proposito. 
 */
 

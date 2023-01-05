@@ -19,6 +19,7 @@ bool_t
 sub_1_svc(operandos *argp, int *result, struct svc_req *rqstp)
 {
 	printf("Recebi um chamado: sub %d %d\n", argp->a, argp->b);
+	sleep(15);
 	*result = argp->a - argp->b;
 
 	return(TRUE);
@@ -28,6 +29,7 @@ bool_t
 divisao_1_svc(operandos *argp, int *result, struct svc_req *rqstp)
 {
 	printf("Recebi um chamado: div %d %d\n", argp->a, argp->b);
+	sleep(20);
 	*result = argp->a / argp->b;
 
 	return(TRUE);
@@ -37,6 +39,7 @@ bool_t
 mult_1_svc(operandos *argp, int *result, struct svc_req *rqstp)
 {
 	printf("Recebi um chamado: mult %d %d\n", argp->a, argp->b);
+	sleep(5);
 	*result = argp->a * argp->b;
 
 	return(TRUE);
