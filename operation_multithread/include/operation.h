@@ -7,24 +7,14 @@
 #define _OPERATION_H_RPCGEN
 
 #include <rpc/rpc.h>
-
 #include <pthread.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-struct operandos {
-	int a;
-	int b;
-};
-typedef struct operandos operandos;
+#include "operandos.h"
 
 #define OPERATION_PROG 0x20000001
 #define OPERATION_VERSION 1
 
-#if defined(__STDC__) || defined(__cplusplus)
+#if defined(__STDC__)
 #define SOMA 1
 extern  enum clnt_stat soma_1(operandos *, int *, CLIENT *);
 extern  bool_t soma_1_svc(operandos *, int *, struct svc_req *);
@@ -57,16 +47,12 @@ extern int operation_prog_1_freeresult ();
 
 /* the xdr functions */
 
-#if defined(__STDC__) || defined(__cplusplus)
+#if defined(__STDC__)
 extern  bool_t xdr_operandos (XDR *, operandos*);
 
 #else /* K&R C */
 extern bool_t xdr_operandos ();
 
 #endif /* K&R C */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* !_OPERATION_H_RPCGEN */
