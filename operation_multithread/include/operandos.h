@@ -4,6 +4,17 @@
 typedef struct operandos {
 	int a;
 	int b;
-} operandos;
+} Operandos;
+
+typedef struct xdr_message {
+	int func;
+	int a;
+	int b;
+} XDRMessage;
+
+typedef struct xdr_operation {
+	int func;
+	Operandos op;
+} XDROp;
 
 #endif

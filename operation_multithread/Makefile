@@ -1,6 +1,6 @@
 COMPILER = gcc
 
-FLAGS  = -lnsl -lxdr -ltirpc -lpthread -Wall -fexceptions -g -Iinclude -I/usr/include/tirpc
+FLAGS  = -lnsl -ltirpc -lpthread -Wall -fexceptions -g -Iinclude -I/usr/include/tirpc
 OBJ = obj
 SRC = src
 
@@ -9,7 +9,7 @@ SERVER_FOLDER = src/server
 
 C_FILENAMES = queue.c # operation_xdr.c
 C_CLIENT_FILENAMES = operation_client.c operation_clnt.c
-C_SERVER_FILENAMES = main.c server.c svc.c # operation.c
+C_SERVER_FILENAMES = main.c server.c svc.c functions.c # operation.c
 
 C_FULL_PATH = $(patsubst %.c, $(SRC)/%.c, $(C_FILENAMES) )
 C_FULL_PATH_CLIENT = $(patsubst %.c, $(CLIENT_FOLDER)/%.c, $(C_CLIENT_FILENAMES) )

@@ -7,7 +7,7 @@
 #include "operation.h"
 
 int 
-options (operandos *op) {
+options (Operandos *op) {
 	int choice;
     printf("\n\n");
     printf("***** Choose an option ******\n");
@@ -35,18 +35,18 @@ operation_prog_1(char *host) {
 	CLIENT *clnt;
 	enum clnt_stat retval_1;
 	int result_1;
-	operandos soma_1_arg;
+	Operandos soma_1_arg;
 	enum clnt_stat retval_2;
 	int result_2;
-	operandos sub_1_arg;
+	Operandos sub_1_arg;
 	enum clnt_stat retval_3;
 	int result_3;
-	operandos divisao_1_arg;
+	Operandos divisao_1_arg;
 	enum clnt_stat retval_4;
 	int result_4;
-	operandos mult_1_arg;
+	Operandos mult_1_arg;
 	int result;
-	operandos op_arg;
+	Operandos op_arg;
 
 	//switch case choice:
 	int choice, fstNumber, sndNumber;

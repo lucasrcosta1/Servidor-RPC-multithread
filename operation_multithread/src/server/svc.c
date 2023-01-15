@@ -1,34 +1,46 @@
 #include "svc.h"
 
+#define MAX_FUNCS 4
+
+func_t funcs[MAX_FUNCS] = {
+    adicao,
+    subtracao,
+    multiplicacao,
+    divisao
+};
+
 void operation_registrar(int * client, Server * server)
 {
-	int len;
-    char xdr_string[MAX_BUFFER];
-	size_t size;
-	operandos my_obj;
-	
+    char buffer[MAX_BUFFER];
+    int bytes_received;
 
-    XDR xdr_stream;
+    // Receive data from the client
+    bytes_received = recv((* client), buffer, MAX_BUFFER, 0);
 
-	while ((len = read((* client), xdr_string + size, MAX_BUFFER - size - 1)) > 0) {
-        size = size + len;
-        if (size > MAX_BUFFER - 1 || xdr_string[size - 1] == '\n') {
-            break;
-        }
+    if (bytes_received < 0) {
+        perror("Error receiving data\n");
+        return;
     }
 
-	if (len == -1) {
-		perror("Não foi possível ler da requisição");
-	}
+    // Convert the received data to a struct
+    XDRMessage * args = (XDRMessage *) buffer;
+    XDROp * op = (XDROp *) malloc(sizeof(XDROp));
 
-	xdrmem_create(&xdr_stream, xdr_string, len, XDR_ENCODE);
-
-	if (! xdr_my_struct(&xdr_stream, &my_obj)) {
-        printf("Error decoding XDR string\n");
-        exit(1);
+    if (args->func > MAX_FUNCS) {
+        perror("Invalid Function\n");
+        return;
     }
 
-    xdr_destroy(&xdr_stream);
+    op->func = args->func;
+    op->op.a = args->a;
+    op->op.b = args->b; 
+
+    // Perform the add operation
+    func_t func = funcs[op->func];
+    int result = func(op->op);
+
+    // Send the result back to the client
+    send(server->socket, &result, sizeof(result), 0);
 }
 
 void * svc_thread_handler(void * args)

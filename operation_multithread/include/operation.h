@@ -16,17 +16,17 @@
 
 #if defined(__STDC__)
 #define SOMA 1
-extern  enum clnt_stat soma_1(operandos *, int *, CLIENT *);
-extern  bool_t soma_1_svc(operandos *, int *, struct svc_req *);
+extern  enum clnt_stat soma_1(Operandos *, int *, CLIENT *);
+extern  bool_t soma_1_svc(Operandos *, int *, struct svc_req *);
 #define SUB 2
-extern  enum clnt_stat sub_1(operandos *, int *, CLIENT *);
-extern  bool_t sub_1_svc(operandos *, int *, struct svc_req *);
+extern  enum clnt_stat sub_1(Operandos *, int *, CLIENT *);
+extern  bool_t sub_1_svc(Operandos *, int *, struct svc_req *);
 #define DIVISAO 3
-extern  enum clnt_stat divisao_1(operandos *, int *, CLIENT *);
-extern  bool_t divisao_1_svc(operandos *, int *, struct svc_req *);
+extern  enum clnt_stat divisao_1(Operandos *, int *, CLIENT *);
+extern  bool_t divisao_1_svc(Operandos *, int *, struct svc_req *);
 #define MULT 4
-extern  enum clnt_stat mult_1(operandos *, int *, CLIENT *);
-extern  bool_t mult_1_svc(operandos *, int *, struct svc_req *);
+extern  enum clnt_stat mult_1(Operandos *, int *, CLIENT *);
+extern  bool_t mult_1_svc(Operandos *, int *, struct svc_req *);
 extern int operation_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -48,7 +48,7 @@ extern int operation_prog_1_freeresult ();
 /* the xdr functions */
 
 #if defined(__STDC__)
-extern  bool_t xdr_operandos (XDR *, operandos*);
+extern  bool_t xdr_operandos (XDR *, Operandos *);
 
 #else /* K&R C */
 extern bool_t xdr_operandos ();
