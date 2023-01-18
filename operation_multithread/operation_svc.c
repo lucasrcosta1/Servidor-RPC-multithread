@@ -94,14 +94,16 @@ serv_request(void *data) {
 
 static void
 operation_prog_1(struct svc_req *rqstp, register SVCXPRT *transp) {
+	int s;
 	struct data_str {
 		struct svc_req *rqstp;
 		SVCXPRT *transp;
 	} *data_ptr = (struct data_str*)malloc(sizeof(struct data_str));
 	data_ptr-> rqstp = rqstp;
 	data_ptr-> transp = transp;
-	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
-	pthread_create(&p_thread,&attr,serv_request,(void *)data_ptr);
+	//pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+	s = pthread_create(&p_thread,&attr,serv_request,(void *)data_ptr);
+	s = pthread_join(p_thread, NULL);
 	
 }
 
