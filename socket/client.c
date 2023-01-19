@@ -35,10 +35,10 @@ int main(void){
     // Send the message to server:
     if (sendto (
         socket_created, 
-        (const void *)client_message, 
+        (void *)client_message, 
         (size_t)strlen(client_message), 
         0,
-        (const struct sockaddr*)&server_addr, 
+        (struct sockaddr*)&server_addr, 
         (socklen_t)server_struct_length
     ) < 0) {
         printf("Unable to send message\n");
