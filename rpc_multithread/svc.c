@@ -1,33 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <pthread.h> // move it to the .h
+#include "rpc.h"
 
-#define NULLPROC 0 // move it to the .h
-#define SUM 1 // move it to the .h
-#define SUB 2 // move it to the .h
-#define DIV 3 // move it to the .h
-#define MULT 4 // move it to the .h
 
 pthread_t p_thread;
 pthread_attr_t attr;
-
-typedef struct operandos {
-	int a, b;
-} operandos;
-
-typedef 
-struct socket_info {
-    int socket_created;
-	int result;
-    int operation;
-    int client_struct_length, server_struct_length;
-    struct sockaddr_in server_addr, client_addr;
-    operandos data;
-} Socket_info;
 
 void 
 svc_run (Socket_info *socket_data);
@@ -36,18 +14,11 @@ svc_sendreply (Socket_info socket_data);
 void
 *thread_context (void *socket_data);
 void 
-server_sum (operandos args, int *result);
-void 
-server_sub (operandos args, int *result);
-void 
-server_div (operandos args, int *result);
-void 
-server_mult (operandos args, int *result);
-void 
 print_socket_info (Socket_info socket_data);
 
 int 
 main(void){
+	int yes=1;
 	Socket_info socket_data;
 	socket_data.client_struct_length = sizeof(socket_data.client_addr);
     
@@ -60,31 +31,33 @@ main(void){
 		socket_data.socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 		
 		if(socket_data.socket_created < 0){
-			printf("Error while creating socket\n");
+			print("Error while creating socket");
 			return -1;
 		}
-		printf("Socket created successfully\n");
+		print("Socket created successfully");
 		// Create UDP socket;
 		
 		// Set port and IP:
 		socket_data.server_addr.sin_family = AF_INET;
-		socket_data.server_addr.sin_port = htons(3333); //Transforma dados para bytes
+		socket_data.server_addr.sin_port = htons(9999); //Transforma dados para bytes
 		socket_data.server_addr.sin_addr.s_addr = INADDR_ANY;
 		
+		if (setsockopt(socket_data.socket_created, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
+			perror("setsockopt");
+			exit(1);
+		} // Reuse socket
+
 		if (bind (
 			socket_data.socket_created, 
 			(struct sockaddr*)&socket_data.server_addr, 
 			sizeof(socket_data.server_addr)
 		) < 0){
-			printf("Couldn't bind to the port\n");
+			print("Couldn't bind to the port");
 			return -1;
 		}
-		printf("Done with binding\n");
+		print("Done with binding");
 		
 		svc_run(&socket_data);
-
-
-		printf("After svc_run\n");
 	}
     return 0;
 }
@@ -96,39 +69,37 @@ main(void){
  */
 void 
 svc_run (Socket_info *socket_data) {
-	int s;
-	caddr_t data_to_receive, result;
-
 	Socket_info *thread_socket = (Socket_info *)malloc(sizeof(Socket_info));
 	Socket_info auxiliary_sock_data = *socket_data;
+	
 
-	printf("Listening for incoming messages...\n");
+	print("Listening for incoming messages...");
 
-	// Receive client's message:
+	int data;
+	struct sockaddr_in client;
+	socklen_t client_size = sizeof(struct sockaddr_in);
 	if (recvfrom (
 		auxiliary_sock_data.socket_created, 
 		&auxiliary_sock_data, 
-		sizeof(auxiliary_sock_data), 
+		sizeof(Socket_info), 
 		0,
-		(struct sockaddr*) &auxiliary_sock_data.client_addr, 
-		&auxiliary_sock_data.client_struct_length
+		(struct sockaddr*) &client, 
+		&client_size
 	) < 0) {
-		printf("Couldn't receive\n");
+		print("Couldn't receive");
 	}
+
+	auxiliary_sock_data.client_addr = client;
+	auxiliary_sock_data.client_struct_length = client_size;
 
 	printf (
 		"Received message from IP: %s and port: %i\n",
 		inet_ntoa(auxiliary_sock_data.client_addr.sin_addr), 
 		ntohs(auxiliary_sock_data.client_addr.sin_port)
 	);
-		
-	// print_socket_info(auxiliary_sock_data);
 
 	*thread_socket = auxiliary_sock_data;
-	printf("antes criacao thread\n");fflush(stdout);
-	s = pthread_create(&p_thread,&attr,thread_context,(void *)thread_socket);
-	printf("thread value s = %d\n",s);fflush(stdout);
-	getchar();
+	pthread_create(&p_thread,&attr,thread_context,(void *)thread_socket);
 }
 
 /**
@@ -141,88 +112,61 @@ void
 *thread_context (void *socket_data) {
 	Socket_info auxiliary_sock_data = *(Socket_info *)socket_data;
 	auxiliary_sock_data.client_struct_length = sizeof(auxiliary_sock_data.client_addr);
-  	print_socket_info(auxiliary_sock_data);
-	printf("antes do switch\n"); fflush(stdout);
+	
 	switch (auxiliary_sock_data.operation) {
 	case NULLPROC:
 		svc_sendreply(auxiliary_sock_data);
 
 	case SUM:
-		printf("dentro do case SUM\n"); fflush(stdout);
 		server_sum(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		svc_sendreply(auxiliary_sock_data);
-		printf("depois svc_sendreply\n"); fflush(stdout);
-		getchar();
-		close(auxiliary_sock_data.socket_created);
 		break;
 
 	case SUB:
 		server_sub(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		svc_sendreply(auxiliary_sock_data);
-		close(auxiliary_sock_data.socket_created);
 		break;
 
 	case DIV:
 		server_div(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		svc_sendreply(auxiliary_sock_data);
-		close(auxiliary_sock_data.socket_created);
 		break;
 
 	case MULT:
 		server_mult(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		svc_sendreply(auxiliary_sock_data);
-		close(auxiliary_sock_data.socket_created);
 		break;
 
 	default:
-		printf("Option not recognized.\n");
+		print("Option not recognized.");
 		exit(1);
 	}
-	printf("terminando a thread\n");fflush(stdout);
+
+	svc_sendreply(auxiliary_sock_data);
+	close(auxiliary_sock_data.socket_created);
+
 	pthread_exit(NULL);
 }
 
+/**
+ * @brief Return value to client after calculated
+ * 
+ * @param socket_data 
+ */
 void 
 svc_sendreply (Socket_info socket_data) {
 	int r;
 	Socket_info auxiliary_sock_data = socket_data;
-	printf("antes sendto\n");fflush(stdout);
+
 	if ((r = sendto (
 		auxiliary_sock_data.socket_created, 
-		&auxiliary_sock_data.result, 
-		sizeof(auxiliary_sock_data.result), 
+		&auxiliary_sock_data, 
+		sizeof(auxiliary_sock_data), 
 		0,
 		(struct sockaddr*)&auxiliary_sock_data.client_addr, 
 		(socklen_t)auxiliary_sock_data.client_struct_length
 	))  < 0) {
-		printf("Can't send\n");
+		print("Can't send");
 	}
-	printf("depois sendto\n");fflush(stdout);
 	// Respond to client:
-	printf("server result after operation: %d r = %d\n", auxiliary_sock_data.result, r);fflush(stdout);
-  	// print_socket_info(auxiliary_sock_data);
+	print("Data sent to client");
 }
-
-void 
-server_sum (operandos args, int *result) {
-	*result = args.a + args.b;
-}
-
-void 
-server_sub (operandos args, int *result) {
-	*result = args.a - args.b;
-}
-
-void 
-server_div (operandos args, int *result) {
-	*result = args.a * args.b;
-}
-
-void 
-server_mult (operandos args, int *result) {
-	*result = args.a / args.b;
-}
-
 
  /**
  * @brief Print all socket info
@@ -245,3 +189,7 @@ print_socket_info (Socket_info socket_data) {
 	printf("***********/print_socket_info()*************\n\n"); fflush(stdout);
 }
 
+void
+print(char *output) {
+	printf("%s\n", output);fflush(stdout);
+}
