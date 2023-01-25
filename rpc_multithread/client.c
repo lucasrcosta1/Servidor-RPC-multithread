@@ -124,8 +124,8 @@ options (operandos *op) {
     print("\n");
     print("***** Choose an option ******");
     print("(1). Sum two numbers");
-    print("(2). Subtract two numbers ");
-    print("(3). Multiply two numbers");
+    print("(2). Sort random 100000 numbers using selection sort ");
+    print("(3). Multiply two matrices");
     print("(4). Divide two numbers");
     print("(5). Quit");
     print("*****************************");

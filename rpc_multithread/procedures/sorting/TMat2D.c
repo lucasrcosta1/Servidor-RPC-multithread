@@ -21,7 +21,6 @@ TMat2D *mat2D_create(int nrow, int ncol) {
   if (mat == NULL) {
     return NULL;
   }
-
   mat->nrows = nrow;
   mat->ncolumns = ncol;
   mat->data = malloc(ncol * nrow * sizeof(double));

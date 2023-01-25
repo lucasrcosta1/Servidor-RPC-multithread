@@ -123,15 +123,15 @@ void
 		// close(auxiliary_sock_data.socket_created);
 		break;
 
-	case SUB:
-		server_sub(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		svc_sendreply(&auxiliary_sock_data);
+	case SORT:
+		// char *file = server_sort();
+		// svc_sendreply_sort(*file,&auxiliary_sock_data);
 		// close(auxiliary_sock_data.socket_created);
 		break;
-	case MULT:
-		server_mult(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		svc_sendreply(&auxiliary_sock_data);
-		// close(auxiliary_sock_data.socket_created);
+
+	case MULT_MATRIX:
+		server_mult_matrix(auxiliary_sock_data.data,&auxiliary_sock_data.result);
+		// svc_sendreply(&auxiliary_sock_data);
 		break;
 
 	case DIV:
@@ -178,6 +178,29 @@ svc_sendreply (Socket_info *socket_data) {
 	
 }
 
+void 
+svc_sendreply_sort (char *file, Socket_info *socket_data) {
+	int r;
+	char s[255];
+	
+	Socket_info auxiliary_sock_data = *socket_data;
+	struct sockaddr_in client = socket_data->client_addr;
+	socklen_t client_size = sizeof(struct sockaddr_in);
+	if ((r = sendto (
+		auxiliary_sock_data.socket_created, 
+		&file, 
+		sizeof(file), 
+		0,
+		(struct sockaddr*)&client, 
+		(socklen_t)client_size
+	))  < 0) {
+		print_socket_info(auxiliary_sock_data);
+		print("Can't send");
+		perror(s);
+		// printf("%s\n",s);
+	} else print("Data sent to client");
+}
+
  /**
  * @brief Print all socket info
  * 
@@ -203,3 +226,27 @@ void
 print(char *output) {
 	printf("%s\n", output);fflush(stdout);
 }
+
+// void
+// server_mult_matrix () {
+// 	int r;
+// 	char s[255];
+
+// 	Socket_info auxiliary_sock_data = *socket_data;
+// 	struct sockaddr_in client = socket_data->client_addr;
+// 	socklen_t client_size = sizeof(struct sockaddr_in);
+// 	if ((r = sendto (
+// 		auxiliary_sock_data.socket_created, 
+// 		&auxiliary_sock_data, 
+// 		sizeof(auxiliary_sock_data), 
+// 		0,
+// 		(struct sockaddr*)&client, 
+// 		(socklen_t)client_size
+// 	))  < 0) {
+// 		print_socket_info(auxiliary_sock_data);
+// 		print("Can't send");
+// 		perror(s);
+// 		// printf("%s\n",s);
+// 	} else print("Data sent to client");
+	
+// }

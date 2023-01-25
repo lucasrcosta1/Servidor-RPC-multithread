@@ -79,6 +79,30 @@ recv_operation (int *response, Socket_info *socket_data) {
 	return true;
 }
 
+
+bool
+recv_operation_sort (char *file_response, Socket_info *socket_data) {
+	int r;
+    Socket_info recv_sock_data = *socket_data;
+
+	struct sockaddr_in client;
+	socklen_t client_size = sizeof(struct sockaddr_in);
+	if (recvfrom (
+		recv_sock_data.socket_created, 
+		&file_response, 
+		sizeof(file_response), 
+		0,
+		(struct sockaddr*) &client, 
+		&client_size
+	) < 0) {
+		print("Couldn't receive");
+	} else print("Data received");
+
+	*socket_data = recv_sock_data;
+	printf("%s", file_response);
+	return true;
+}
+
  /**
  * @brief Print all socket info
  * 

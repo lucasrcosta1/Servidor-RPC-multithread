@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "sort.h"
 
-void write_numbers_to_file(int* numbers)
+char * 
+write_numbers_to_file(int* numbers)
 {
     FILE *filePointer;
 
@@ -15,6 +17,7 @@ void write_numbers_to_file(int* numbers)
     }
 
     fclose(filePointer);
+    return (char *)filePointer;
 }
 
 void swap(int *xp, int *yp)
@@ -79,29 +82,29 @@ void random_int_number_generator()
     fclose(fp);
 }
 
-void sort()
+char *sort()
 {
     int *arr;
-
     random_int_number_generator();
     arr = read_numbers_from_file();
     selection_sort(arr, 100000);
-    write_numbers_to_file(arr);
+    char *ret = write_numbers_to_file(arr);
+
 }
 
-int main()
-{
-    clock_t start, end;
-    double time_taken;
+// int main()
+// {
+//     // clock_t start, end;
+//     // double time_taken;
 
 
-    start = clock();
-    sort();
-    end = clock();
+//     // start = clock();
+//     sort();
+//     // end = clock();
 
-    time_taken = ((double) (end - start)) / CLOCKS_PER_SEC;
+//     // time_taken = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-    printf("O procedimento está levando %f segundos para executar \n", time_taken);
+//     // printf("O procedimento está levando %f segundos para executar \n", time_taken);
 
-    return 0;
-}
+//     return 0;
+// }

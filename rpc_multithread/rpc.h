@@ -9,9 +9,9 @@
 
 #define NULLPROC 0 
 #define SUM 1 
-#define SUB 2 
-#define DIV 3 
-#define MULT 4 
+#define SORT 2 
+#define MULT_MATRIX 3 
+#define DIV 4 
 
 typedef 
 struct operandos {
@@ -31,12 +31,12 @@ struct socket_info {
 //Server functions
 void 
 server_sum (operandos args, int *result);
-void 
-server_sub (operandos args, int *result);
+char * 
+server_sort ();
 void 
 server_div (operandos args, int *result);
 void 
-server_mult (operandos args, int *result);
+server_mult_matrix (operandos args, int *result);
 
 //Client functions
 void
