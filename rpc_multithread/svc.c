@@ -10,7 +10,7 @@ pthread_attr_t attr;
 void 
 svc_run (Socket_info *socket_data);
 void 
-svc_sendreply (Socket_info socket_data);
+svc_sendreply (Socket_info *socket_data);
 void
 *thread_context (void *socket_data);
 void 
@@ -72,7 +72,6 @@ svc_run (Socket_info *socket_data) {
 	Socket_info *thread_socket = (Socket_info *)malloc(sizeof(Socket_info));
 	Socket_info auxiliary_sock_data = *socket_data;
 	
-
 	print("Listening for incoming messages...");
 
 	int data;
@@ -93,9 +92,10 @@ svc_run (Socket_info *socket_data) {
 	auxiliary_sock_data.client_struct_length = client_size;
 
 	printf (
-		"Received message from IP: %s and port: %i\n",
+		"Received message from IP: %s and port: %i - Socket: %d\n",
 		inet_ntoa(auxiliary_sock_data.client_addr.sin_addr), 
-		ntohs(auxiliary_sock_data.client_addr.sin_port)
+		ntohs(auxiliary_sock_data.client_addr.sin_port),
+		auxiliary_sock_data.socket_created
 	);
 
 	*thread_socket = auxiliary_sock_data;
@@ -115,31 +115,36 @@ void
 	
 	switch (auxiliary_sock_data.operation) {
 	case NULLPROC:
-		svc_sendreply(auxiliary_sock_data);
+		svc_sendreply(&auxiliary_sock_data);
 
 	case SUM:
 		server_sum(auxiliary_sock_data.data,&auxiliary_sock_data.result);
+		svc_sendreply(&auxiliary_sock_data);
+		// close(auxiliary_sock_data.socket_created);
 		break;
 
 	case SUB:
 		server_sub(auxiliary_sock_data.data,&auxiliary_sock_data.result);
+		svc_sendreply(&auxiliary_sock_data);
+		// close(auxiliary_sock_data.socket_created);
+		break;
+	case MULT:
+		server_mult(auxiliary_sock_data.data,&auxiliary_sock_data.result);
+		svc_sendreply(&auxiliary_sock_data);
+		// close(auxiliary_sock_data.socket_created);
 		break;
 
 	case DIV:
 		server_div(auxiliary_sock_data.data,&auxiliary_sock_data.result);
+		svc_sendreply(&auxiliary_sock_data);
+		// close(auxiliary_sock_data.socket_created);
 		break;
 
-	case MULT:
-		server_mult(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		break;
 
 	default:
 		print("Option not recognized.");
 		exit(1);
 	}
-
-	svc_sendreply(auxiliary_sock_data);
-	close(auxiliary_sock_data.socket_created);
 
 	pthread_exit(NULL);
 }
@@ -150,22 +155,27 @@ void
  * @param socket_data 
  */
 void 
-svc_sendreply (Socket_info socket_data) {
+svc_sendreply (Socket_info *socket_data) {
 	int r;
-	Socket_info auxiliary_sock_data = socket_data;
+	char s[255];
 
+	Socket_info auxiliary_sock_data = *socket_data;
+	struct sockaddr_in client = socket_data->client_addr;
+	socklen_t client_size = sizeof(struct sockaddr_in);
 	if ((r = sendto (
 		auxiliary_sock_data.socket_created, 
 		&auxiliary_sock_data, 
 		sizeof(auxiliary_sock_data), 
 		0,
-		(struct sockaddr*)&auxiliary_sock_data.client_addr, 
-		(socklen_t)auxiliary_sock_data.client_struct_length
+		(struct sockaddr*)&client, 
+		(socklen_t)client_size
 	))  < 0) {
+		print_socket_info(auxiliary_sock_data);
 		print("Can't send");
-	}
-	// Respond to client:
-	print("Data sent to client");
+		perror(s);
+		// printf("%s\n",s);
+	} else print("Data sent to client");
+	
 }
 
  /**
