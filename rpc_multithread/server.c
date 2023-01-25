@@ -18,12 +18,12 @@ server_sub (operandos args, int *result) {
 }
 
 void 
-server_div (operandos args, int *result) {
+server_mult (operandos args, int *result) {
 	*result = args.a * args.b;
 }
 
 void 
-server_mult (operandos args, int *result) {
+server_div (operandos args, int *result) {
 	*result = args.a / args.b;
 }
 

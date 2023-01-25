@@ -33,7 +33,7 @@ bool
 send_operation (operandos *argp, Socket_info *socket_data) {
     Socket_info send_sock_data = *socket_data;
     send_sock_data.data = *argp;
-	
+    
     if (sendto (
         send_sock_data.socket_created, 
         &send_sock_data, //would be probably better if I send only the operators choosen 
@@ -59,20 +59,21 @@ send_operation (operandos *argp, Socket_info *socket_data) {
  */
 bool
 recv_operation (int *response, Socket_info *socket_data) {
-	int r;
+	int r, x = *response;
     Socket_info recv_sock_data = *socket_data;
 
-    if ((r = recvfrom (
-        recv_sock_data.socket_created, 
-        &recv_sock_data,
-        sizeof(recv_sock_data), 
-        0, 
-        NULL,
-		NULL
-    )) < 0) {
-        printf("Error while receiving server's msg\n");
-        return false;
-    }
+	struct sockaddr_in client;
+	socklen_t client_size = sizeof(struct sockaddr_in);
+	if (recvfrom (
+		recv_sock_data.socket_created, 
+		&recv_sock_data, 
+		sizeof(recv_sock_data), 
+		0,
+		(struct sockaddr*) &client, 
+		&client_size
+	) < 0) {
+		print("Couldn't receive");
+	} else print("Data received");
 
 	*socket_data = recv_sock_data;
 	return true;
