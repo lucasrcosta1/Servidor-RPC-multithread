@@ -23,20 +23,16 @@ main(void){
 	socket_data.client_struct_length = sizeof(socket_data.client_addr);
     
 	while (1) {
-		// Clean buffers:
 		socket_data.data.a = 0;
 		socket_data.data.b = 0;
 		
-		// Create UDP socket:
 		socket_data.socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 		
 		if(socket_data.socket_created < 0){
 			print("Error while creating socket");
 			return -1;
 		}
-		// Create UDP socket;
 		
-		// Set port and IP:
 		socket_data.server_addr.sin_family = AF_INET;
 		socket_data.server_addr.sin_port = htons(9999); //Transforma dados para bytes
 		socket_data.server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -183,6 +179,7 @@ svc_sendreply (Socket_info *socket_data) {
 	
 }
 
+//in test - remove later
 void 
 svc_sendreply_sort (char *file, Socket_info *socket_data) {
 	int r;
@@ -205,7 +202,8 @@ svc_sendreply_sort (char *file, Socket_info *socket_data) {
 		// printf("%s\n",s);
 	} else print("Data sent to client");
 }
-
+//\in test - remove later
+ 
  /**
  * @brief Print all socket info
  * 
@@ -227,31 +225,12 @@ print_socket_info (Socket_info socket_data) {
 	printf("***********/print_socket_info()*************\n\n"); fflush(stdout);
 }
 
+/**
+ * @brief Simplify the printf and fflush sintax to display a message  
+ * 
+ * @param output 
+ */
 void
 print(char *output) {
 	printf("%s\n", output);fflush(stdout);
 }
-
-// void
-// server_mult_matrix () {
-// 	int r;
-// 	char s[255];
-
-// 	Socket_info auxiliary_sock_data = *socket_data;
-// 	struct sockaddr_in client = socket_data->client_addr;
-// 	socklen_t client_size = sizeof(struct sockaddr_in);
-// 	if ((r = sendto (
-// 		auxiliary_sock_data.socket_created, 
-// 		&auxiliary_sock_data, 
-// 		sizeof(auxiliary_sock_data), 
-// 		0,
-// 		(struct sockaddr*)&client, 
-// 		(socklen_t)client_size
-// 	))  < 0) {
-// 		print_socket_info(auxiliary_sock_data);
-// 		print("Can't send");
-// 		perror(s);
-// 		// printf("%s\n",s);
-// 	} else print("Data sent to client");
-	
-// }

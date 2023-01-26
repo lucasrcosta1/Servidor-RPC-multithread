@@ -3,22 +3,26 @@ Sugestao de estrutura:
         O que é um servidor RPC
             Comunicacao entre stubs:
                 ->Socket UDP;
-                ->Marshling
+                ->Marshaling
         Motivacao (Importancia de um Serv RPC)
                 
         2) Desenvolvimento:
             Passos necessarios para realizacao 
-                Explicar codigos:
+                Explicar codigos: 
+                    Materiais:
+                        -Usar Diagrama de fluxo (caminho: screenshots/diagrama_de_fluxo/block_diagram_rpc_server.png)
+                        -Screenshots do codigo de cada execucao envolvida na operacao soma (caminho: screenshots/code_flux_to_sum_operation/)
+                <<OBS: Na apresentacao, talvez compense adicionar somente o diagrama de fluxo, devido ao tempo>>
                     Cliente
                     Cliente_stub
-                    Marshling (Explicar porque nao foi feito)
+                    Marshaling (Explicar porque nao foi feito)
                     servidor
                     servidor_stub
             Dificuldades enfrentadas
                 Comunicacao entre cliente e servidor em um cenario multithread safe:
-                    1)Uso previo e adequacao da funcao svc_run multithread
-                    2)Desclassificacao do uso de funcao pronta da lib rpc/rpc.h devido ao svc_sendreply
-                    3)Devido aos pontos 1) e 2), tambem foi descontinuado o uso do gerador de rpc RPCGEN
+                    1)Uso previo e adequacao da funcao svc_run multithread (caminho: 'screenshots/dificuldade_enfrentada_1)')
+                    2)Desclassificacao do uso de funcao pronta da lib rpc/rpc.h devido ao svc_sendreply (caminho: 'screenshots/dificuldade_enfrentada_2)/')
+                    3)Video do problema identificado ao utilizar lib rpc/rpc.h (caminho: 'screenshots/resultado_das_dificuldades_1)_e _2)/execucao_projeto_com_erro_de_retorno.mov')
                         
         3) Conclusao:
             Resultados:

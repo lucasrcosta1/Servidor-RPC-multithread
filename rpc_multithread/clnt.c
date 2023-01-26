@@ -11,7 +11,7 @@ create_socket (Socket_info **socket_data) {
 	*socket_data = malloc(sizeof(Socket_info));
 	(*socket_data)->server_struct_length = sizeof((*socket_data)->server_addr);
 	
-	(*socket_data)->socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); // Create socket:
+	(*socket_data)->socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if ((*socket_data)->socket_created < 0) {
         printf("Error while creating socket\n");
 		return SOCKET_CREATE_ERR;
@@ -38,7 +38,7 @@ send_operation (operandos *argp, Socket_info *socket_data) {
     
     if (sendto (
         send_sock_data.socket_created, 
-        &send_sock_data, //would be probably better if I send only the operators choosen 
+        &send_sock_data, 
 		sizeof(send_sock_data),
         0,
         (struct sockaddr*)&send_sock_data.server_addr, 

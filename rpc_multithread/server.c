@@ -3,7 +3,12 @@
 #include "./procedures/sorting/sort.h"
 #include "./procedures/sorting/TMat2D.h"
 
-
+/**
+ * @brief Increment a counter from 0 to 2 billion and sum two values given by the client
+ * 
+ * @param args 
+ * @param result 
+ */
 void 
 server_sum (operandos args, int *result) {
 	int i =  0;
