@@ -3,13 +3,11 @@
 #include "./procedures/sorting/sort.h"
 #include "./procedures/sorting/TMat2D.h"
 
-int 
-i = 0, 
-j = 0;
 
 void 
 server_sum (operandos args, int *result) {
-	while (i < 100000000) {i++;}
+	int i =  0;
+	while (i < 2000000000) {i++;}
 	*result = args.a + args.b;
 }
 
@@ -18,12 +16,11 @@ server_sort () {
 	return sort();
 }
 
-void 
+bool 
 server_mult_matrix (operandos args, int *result) {
 	int r;
 	TMat2D *p;
 	TMat2D *mat1 = NULL, *mat2 = NULL;
-	printf("args.a: %d  | args.b: %d\n",args.a,args.b);
 	mat1 = mat2D_create(args.a, args.b);
 	mat2 = mat2D_create(args.b, args.a);
 	p 	 = mat2D_create(args.a, args.a);
@@ -38,15 +35,23 @@ server_mult_matrix (operandos args, int *result) {
 	)) < 0 ) {
 		
 		printf("Error to calculate r = %d\n",r);
-	} else print("Matrix created with success");
+		mat2d_free(mat1);
+		mat2d_free(mat2);
+		mat2d_free(p);
 
-	mat2d_free(mat1);
-	mat2d_free(mat2);
-	mat2d_free(p);
+		return MATRIX_MULT_ERROR;
+	} else {
+		mat2d_free(mat1);
+		mat2d_free(mat2);
+		mat2d_free(p);
+		return MATRIX_MULT_SUCCESS;
+	}
+
 }
 
 void 
 server_div (operandos args, int *result) {
+	sleep(10);
 	*result = args.a / args.b;
 }
 

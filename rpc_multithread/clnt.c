@@ -6,7 +6,7 @@
  * 
  * @param socket_data 
  */
-void
+int
 create_socket (Socket_info **socket_data) {
 	*socket_data = malloc(sizeof(Socket_info));
 	(*socket_data)->server_struct_length = sizeof((*socket_data)->server_addr);
@@ -14,11 +14,13 @@ create_socket (Socket_info **socket_data) {
 	(*socket_data)->socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); // Create socket:
     if ((*socket_data)->socket_created < 0) {
         printf("Error while creating socket\n");
-    } else printf("Socket created successfully\n");
-    
-    (*socket_data)->server_addr.sin_family = AF_INET;
-    (*socket_data)->server_addr.sin_port = htons(9999);
-    (*socket_data)->server_addr.sin_addr.s_addr = inet_addr("192.168.99.139");
+		return SOCKET_CREATE_ERR;
+    } else {
+		(*socket_data)->server_addr.sin_family = AF_INET;
+		(*socket_data)->server_addr.sin_port = htons(9999);
+		(*socket_data)->server_addr.sin_addr.s_addr = inet_addr("192.168.99.139");
+		return SOCKET_CREATE_SUCCESS;
+	}
 }
 
 /**
@@ -44,8 +46,7 @@ send_operation (operandos *argp, Socket_info *socket_data) {
     ) < 0) {
         printf("Unable to send message\n");
         return false;
-    }
-	return true;
+    } else return true;
 	
 }
 
@@ -59,7 +60,7 @@ send_operation (operandos *argp, Socket_info *socket_data) {
  */
 bool
 recv_operation (int *response, Socket_info *socket_data) {
-	int r, x = *response;
+	int r;
     Socket_info recv_sock_data = *socket_data;
 
 	struct sockaddr_in client;

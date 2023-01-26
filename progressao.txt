@@ -1,0 +1,28 @@
+Sugestao de estrutura:
+    1) Introducao:
+        O que é um servidor RPC
+            Comunicacao entre stubs:
+                ->Socket UDP;
+                ->Marshling
+        Motivacao (Importancia de um Serv RPC)
+                
+        2) Desenvolvimento:
+            Passos necessarios para realizacao 
+                Explicar codigos:
+                    Cliente
+                    Cliente_stub
+                    Marshling (Explicar porque nao foi feito)
+                    servidor
+                    servidor_stub
+            Dificuldades enfrentadas
+                Comunicacao entre cliente e servidor em um cenario multithread safe:
+                    1)Uso previo e adequacao da funcao svc_run multithread
+                    2)Desclassificacao do uso de funcao pronta da lib rpc/rpc.h devido ao svc_sendreply
+                    3)Devido aos pontos 1) e 2), tambem foi descontinuado o uso do gerador de rpc RPCGEN
+                        
+        3) Conclusao:
+            Resultados:
+                Servidor RPC multithread implementado;
+                Cliente pode executar 4 operacoes no servidor e todas suportam concorrencia por parte do servidor
+
+<<OBS: Pegar referencia de tudo que usar pro trabalho>>

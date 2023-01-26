@@ -34,7 +34,6 @@ main(void){
 			print("Error while creating socket");
 			return -1;
 		}
-		print("Socket created successfully");
 		// Create UDP socket;
 		
 		// Set port and IP:
@@ -55,7 +54,6 @@ main(void){
 			print("Couldn't bind to the port");
 			return -1;
 		}
-		print("Done with binding");
 		
 		svc_run(&socket_data);
 	}
@@ -92,7 +90,7 @@ svc_run (Socket_info *socket_data) {
 	auxiliary_sock_data.client_struct_length = client_size;
 
 	printf (
-		"Received message from IP: %s and port: %i - Socket: %d\n",
+		"\nReceived message from IP: %s and port: %i - Socket: %d\n",
 		inet_ntoa(auxiliary_sock_data.client_addr.sin_addr), 
 		ntohs(auxiliary_sock_data.client_addr.sin_port),
 		auxiliary_sock_data.socket_created
@@ -110,6 +108,7 @@ svc_run (Socket_info *socket_data) {
  */
 void 
 *thread_context (void *socket_data) {
+	bool response = false;
 	Socket_info auxiliary_sock_data = *(Socket_info *)socket_data;
 	auxiliary_sock_data.client_struct_length = sizeof(auxiliary_sock_data.client_addr);
 	
@@ -124,14 +123,16 @@ void
 		break;
 
 	case SORT:
-		// char *file = server_sort();
+		// response = server_sort();
+		// auxiliary_sock_data.response = response;
 		// svc_sendreply_sort(*file,&auxiliary_sock_data);
 		// close(auxiliary_sock_data.socket_created);
 		break;
 
 	case MULT_MATRIX:
-		server_mult_matrix(auxiliary_sock_data.data,&auxiliary_sock_data.result);
-		// svc_sendreply(&auxiliary_sock_data);
+		response = server_mult_matrix(auxiliary_sock_data.data,&auxiliary_sock_data.result);
+		auxiliary_sock_data.response = response;
+		svc_sendreply(&auxiliary_sock_data);
 		break;
 
 	case DIV:
@@ -174,7 +175,11 @@ svc_sendreply (Socket_info *socket_data) {
 		print("Can't send");
 		perror(s);
 		// printf("%s\n",s);
-	} else print("Data sent to client");
+	} else printf("\nData sent to client IP: %s and port: %i - Socket: %d\n",
+		inet_ntoa(auxiliary_sock_data.client_addr.sin_addr), 
+		ntohs(auxiliary_sock_data.client_addr.sin_port),
+		auxiliary_sock_data.socket_created
+	);
 	
 }
 
