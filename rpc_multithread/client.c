@@ -8,8 +8,8 @@ main (int argc, char *argv[]) {
 	int sock_ret = 0;
 	Socket_info *socket_data;
 
-	if (argc < 2) {
-		printf("usage: %s server_host\n", argv[0]);
+	if (argc < 1) {
+		printf("usage: %s\n", argv[0]);
 		exit(1);
 	}
 
@@ -44,16 +44,17 @@ process_choice (Socket_info *socket_data) {
 			retval = send_operation(&op_arg, socket_data);
 			if (!retval) {
 				print("call failed");
-			} else retval = false;
+			} else {
+				retval = false;
 
-			clear();
-			print("Waiting server response");
+				clear();
+				print("Waiting server response");
 
-			retval = recv_operation(&result, socket_data);
-			if (!retval) {
-				print("call failed");
-			} else retval = false;
-
+				retval = recv_operation(&result, socket_data);
+				if (!retval) {
+					print("call failed");
+				} else retval = false;
+			}
 			printf (
 				"Operation: Sum\n\t Returned: %d + %d = %d\n",
 				op_arg.a,
@@ -62,31 +63,34 @@ process_choice (Socket_info *socket_data) {
 			);
 			break;
 
-		case SORT:
+		case PRIME_NUMBERS:
             socket_data->operation = choice;
 
 			retval = send_operation(&op_arg, socket_data);
 			if (!retval) {
 				print("call failed");
-			} else retval = false;
-
-			clear();
-			print("Waiting server response");
-
-			retval = recv_operation(&result, socket_data);
-			if (!retval) {
-				print("call failed");
-			} else { 
-				char *ret_msg;
-				if (socket_data->response) ret_msg = "Sort was performed!";
-				else ret_msg = "Sort was not performed. Try again later or contact the system Adm.";
-				
-				printf (
-					"Operation: Sort\n\t Return: %s\n",
-					ret_msg
-				);
+			} else  {
 				retval = false;
-			}
+
+				clear();
+				print("Waiting server response");
+
+				retval = recv_operation(&result, socket_data);
+				if (!retval) {
+					print("call failed");
+				} else { 
+					char *ret_msg;
+					if (socket_data->response) ret_msg = "is prime";
+					else ret_msg = "isn't prime";
+					
+					printf (
+						"Operation: Sort\n\t Return: %lu %s\n",
+						op_arg.prime,
+						ret_msg
+					);
+					retval = false;
+				}
+			}	
 
 			break;
 
@@ -96,25 +100,28 @@ process_choice (Socket_info *socket_data) {
 			retval = send_operation(&op_arg, socket_data);
 			if (!retval) {
 				print("call failed");
-			} else retval = false;
-
-			clear();
-			print("Waiting server response");
-			
-			retval = recv_operation(&result, socket_data);
-			if (!retval) {
-				print("call failed");
 			} else {
-				char *ret_msg;
-				if (socket_data->response) ret_msg = "Matrix created with success!";
-				else ret_msg = "Matrix was not created. Try again later or contact the system Adm.";
-				printf (
-					"Operation: Multiply Matriz size: %d x %d\n\t Return: %s" ,
-					op_arg.a,
-					op_arg.b,
-					ret_msg
-				);
+				
 				retval = false;
+				
+				clear();
+				print("Waiting server response");
+				
+				retval = recv_operation(&result, socket_data);
+				if (!retval) {
+					print("call failed");
+				} else {
+					char *ret_msg;
+					if (socket_data->response) ret_msg = "Matrix created with success!";
+					else ret_msg = "Matrix was not created. Try again later or contact the system Adm.";
+					printf (
+						"Operation: Multiply Matriz size: %d x %d\n\t Return: %s" ,
+						op_arg.a,
+						op_arg.b,
+						ret_msg
+					);
+					retval = false;
+				}
 			}
 			break;
 
@@ -124,22 +131,24 @@ process_choice (Socket_info *socket_data) {
 			retval = send_operation(&op_arg, socket_data);
 			if (!retval) {
 				print("call failed");
-			} else retval = false;
+			} else  {
+				retval = false;
 
-			clear();
-			print("Waiting server response");
+				clear();
+				print("Waiting server response");
 
-			retval = recv_operation(&result, socket_data);
-			if (!retval) {
-				print("call failed");
-			} else retval = false;
+				retval = recv_operation(&result, socket_data);
+				if (!retval) {
+					print("call failed");
+				} else retval = false;
 
-			printf (
-				"Operation: Div\n\t Returned: %d / %d = %d\n",
-				op_arg.a,
-				op_arg.b,
-				socket_data->result
-			);
+				printf (
+					"Operation: Div\n\t Returned: %d / %d = %d\n",
+					op_arg.a,
+					op_arg.b,
+					socket_data->result
+				);
+			}
 			break;
 
 		case 5:
@@ -167,7 +176,7 @@ options (operandos *op) {
     print("\n");
     print("***** Choose an option ******");
     print("(1). Sum two numbers after increment i from 0 to 2 billion");
-    print("(2). Sort random 100000 numbers using selection sort ");
+    print("(2). Check if a number is prime");
     print("(3). Multiply two matrixes");
     print("(4). Divide two numbers after sleep 10 seconds");
     print("(5). Quit");
@@ -180,6 +189,9 @@ options (operandos *op) {
 		scanf("%d", &op->a);
 		printf("Second number => ");
 		scanf("%d", &op->b);
+	} else if (choice == 2) {
+		printf("Type a number => ");
+  		scanf("%lu", &op->prime);
 	}
 
 	return choice;

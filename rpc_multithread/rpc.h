@@ -10,7 +10,7 @@
 #define SOCKET_CREATE_ERR -1
 #define NULLPROC 0 
 #define SUM 1 
-#define SORT 2 
+#define PRIME_NUMBERS 2 
 #define MULT_MATRIX 3 
 #define DIV 4 
 #define SOCKET_CREATE_SUCCESS 5
@@ -20,6 +20,7 @@
 typedef 
 struct operandos {
 	int a, b;
+    unsigned long int prime;
 } operandos;
 
 typedef 
@@ -36,8 +37,8 @@ struct socket_info {
 //Server functions
 void 
 server_sum (operandos args, int *result);
-char * 
-server_sort ();
+void
+server_prime_numbers (unsigned long int value, int *result);
 void 
 server_div (operandos args, int *result);
 bool 
