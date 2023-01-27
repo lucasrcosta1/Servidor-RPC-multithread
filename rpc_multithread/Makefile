@@ -1,9 +1,10 @@
 client:
-	gcc -o client client.c clnt.c -lnsl
+	gcc -o client client.c clnt.c -lpthread -lnsl
 
 server: 
-	gcc -o server server.c svc.c -lpthread -lnsl
+	gcc -o server server.c svc.c ./procedures/sorting/TMat2D.c ./procedures/sorting/sort.c -lpthread -lnsl
 
 all:
-	gcc -o Server operation_server.c operation_svc.c operation_xdr.c -lpthread -lnsl
-	gcc -o Client operation_client.c operation_clnt.c operation_xdr.c -lnsl
+	gcc -o server server.c svc.c ./procedures/sorting/TMat2D.c ./procedures/sorting/sort.c -lpthread -lnsl
+
+	gcc -o Client client.c clnt.c -lnsl

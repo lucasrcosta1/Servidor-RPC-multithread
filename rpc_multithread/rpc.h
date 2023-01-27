@@ -7,11 +7,15 @@
 #include <stdbool.h>
 #include <pthread.h> 
 
+#define SOCKET_CREATE_ERR -1
 #define NULLPROC 0 
 #define SUM 1 
-#define SUB 2 
-#define DIV 3 
-#define MULT 4 
+#define SORT 2 
+#define MULT_MATRIX 3 
+#define DIV 4 
+#define SOCKET_CREATE_SUCCESS 5
+#define MATRIX_MULT_SUCCESS true
+#define MATRIX_MULT_ERROR false
 
 typedef 
 struct operandos {
@@ -21,6 +25,7 @@ struct operandos {
 typedef 
 struct socket_info {
     int socket_created;
+    bool response;
 	int result;
     int operation;
     int client_struct_length, server_struct_length;
@@ -31,15 +36,15 @@ struct socket_info {
 //Server functions
 void 
 server_sum (operandos args, int *result);
-void 
-server_sub (operandos args, int *result);
+char * 
+server_sort ();
 void 
 server_div (operandos args, int *result);
-void 
-server_mult (operandos args, int *result);
+bool 
+server_mult_matrix (operandos args, int *result);
 
 //Client functions
-void
+int
 create_socket (Socket_info **socket_data);
 void 
 process_choice (Socket_info *socket_data);

@@ -6,19 +6,21 @@
  * 
  * @param socket_data 
  */
-void
+int
 create_socket (Socket_info **socket_data) {
 	*socket_data = malloc(sizeof(Socket_info));
 	(*socket_data)->server_struct_length = sizeof((*socket_data)->server_addr);
 	
-	(*socket_data)->socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); // Create socket:
+	(*socket_data)->socket_created = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if ((*socket_data)->socket_created < 0) {
         printf("Error while creating socket\n");
-    } else printf("Socket created successfully\n");
-    
-    (*socket_data)->server_addr.sin_family = AF_INET;
-    (*socket_data)->server_addr.sin_port = htons(9999);
-    (*socket_data)->server_addr.sin_addr.s_addr = inet_addr("192.168.99.139");
+		return SOCKET_CREATE_ERR;
+    } else {
+		(*socket_data)->server_addr.sin_family = AF_INET;
+		(*socket_data)->server_addr.sin_port = htons(9999);
+		(*socket_data)->server_addr.sin_addr.s_addr = inet_addr("192.168.99.139");
+		return SOCKET_CREATE_SUCCESS;
+	}
 }
 
 /**
@@ -36,7 +38,7 @@ send_operation (operandos *argp, Socket_info *socket_data) {
     
     if (sendto (
         send_sock_data.socket_created, 
-        &send_sock_data, //would be probably better if I send only the operators choosen 
+        &send_sock_data, 
 		sizeof(send_sock_data),
         0,
         (struct sockaddr*)&send_sock_data.server_addr, 
@@ -44,8 +46,7 @@ send_operation (operandos *argp, Socket_info *socket_data) {
     ) < 0) {
         printf("Unable to send message\n");
         return false;
-    }
-	return true;
+    } else return true;
 	
 }
 
@@ -59,7 +60,7 @@ send_operation (operandos *argp, Socket_info *socket_data) {
  */
 bool
 recv_operation (int *response, Socket_info *socket_data) {
-	int r, x = *response;
+	int r;
     Socket_info recv_sock_data = *socket_data;
 
 	struct sockaddr_in client;
@@ -76,6 +77,30 @@ recv_operation (int *response, Socket_info *socket_data) {
 	} else print("Data received");
 
 	*socket_data = recv_sock_data;
+	return true;
+}
+
+
+bool
+recv_operation_sort (char *file_response, Socket_info *socket_data) {
+	int r;
+    Socket_info recv_sock_data = *socket_data;
+
+	struct sockaddr_in client;
+	socklen_t client_size = sizeof(struct sockaddr_in);
+	if (recvfrom (
+		recv_sock_data.socket_created, 
+		&file_response, 
+		sizeof(file_response), 
+		0,
+		(struct sockaddr*) &client, 
+		&client_size
+	) < 0) {
+		print("Couldn't receive");
+	} else print("Data received");
+
+	*socket_data = recv_sock_data;
+	printf("%s", file_response);
 	return true;
 }
 
