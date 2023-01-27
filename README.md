@@ -3,6 +3,7 @@ Tested in Ubuntu 16
 
 Steps to reproduce it:
 
+0)  Install dependency to run the prime numbers' function sudo apt install libgmp3-dev
 1)  Install rpc bind with command 'sudo apt install rpcbind'
 2)  Clone the repository
 3)  Open a terminal window in the project directory
