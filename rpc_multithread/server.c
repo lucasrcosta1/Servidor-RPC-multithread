@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "rpc.h"
 #include "./procedures/sorting/sort.h"
-#include "./procedures/sorting/TMat2D.h"
+#include "./procedures/prime_numbers/prime.h"
+#include "./procedures/matrix/TMat2D.h"
 
 /**
  * @brief Increment a counter from 0 to 2 billion and sum two values given by the client
@@ -16,9 +17,15 @@ server_sum (operandos args, int *result) {
 	*result = args.a + args.b;
 }
 
-char * 
-server_sort () {
-	return sort();
+void
+server_prime_numbers (unsigned long int value, int *result) {
+	int r, k = 300000;
+	mpz_t n;
+	printf("value sent from user: %lu\n",value);
+	mpz_init(n);
+
+	mpz_set_ui(n,value);
+	*result = miller_rabin(n, k);
 }
 
 bool 

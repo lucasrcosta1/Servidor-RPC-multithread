@@ -118,11 +118,12 @@ void
 		// close(auxiliary_sock_data.socket_created);
 		break;
 
-	case SORT:
-		// response = server_sort();
-		// auxiliary_sock_data.response = response;
-		// svc_sendreply_sort(*file,&auxiliary_sock_data);
-		// close(auxiliary_sock_data.socket_created);
+	case PRIME_NUMBERS:
+		server_prime_numbers(auxiliary_sock_data.data.prime,&auxiliary_sock_data.result);
+		if (auxiliary_sock_data.result == 1)
+			auxiliary_sock_data.response = true;
+		else auxiliary_sock_data.response = false;
+		svc_sendreply(&auxiliary_sock_data);
 		break;
 
 	case MULT_MATRIX:
@@ -134,7 +135,6 @@ void
 	case DIV:
 		server_div(auxiliary_sock_data.data,&auxiliary_sock_data.result);
 		svc_sendreply(&auxiliary_sock_data);
-		// close(auxiliary_sock_data.socket_created);
 		break;
 
 
@@ -179,31 +179,6 @@ svc_sendreply (Socket_info *socket_data) {
 	
 }
 
-//in test - remove later
-void 
-svc_sendreply_sort (char *file, Socket_info *socket_data) {
-	int r;
-	char s[255];
-	
-	Socket_info auxiliary_sock_data = *socket_data;
-	struct sockaddr_in client = socket_data->client_addr;
-	socklen_t client_size = sizeof(struct sockaddr_in);
-	if ((r = sendto (
-		auxiliary_sock_data.socket_created, 
-		&file, 
-		sizeof(file), 
-		0,
-		(struct sockaddr*)&client, 
-		(socklen_t)client_size
-	))  < 0) {
-		print_socket_info(auxiliary_sock_data);
-		print("Can't send");
-		perror(s);
-		// printf("%s\n",s);
-	} else print("Data sent to client");
-}
-//\in test - remove later
- 
  /**
  * @brief Print all socket info
  * 
